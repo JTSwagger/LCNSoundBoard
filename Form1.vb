@@ -1354,7 +1354,7 @@ Public Class Form1
 
 
 
-                    Case Part.Contains("not interested"), Part.Contains("don't need a quote"), Part.Contains("i'm fine"), Part.Contains("not really interested"), Part.Contains("not in arrested"), Part.Contains("that's okay thank you"), Part.Contains("no interest"), Part.Contains("stop calling"), Part.Contains("i'm good"), Part.Contains("all set"), Part.Contains("don't want it"), Part.Contains("not changing"), Part.Contains("i'm happy with"), Part.Contains("very happy"), Part.Contains("no thank you"), Part.Contains("not looking"), Part.Contains("don't wanna change"), Part.Contains("no thank you"), Part.Contains("don't need insurance") 'NI
+                    Case Part.Contains("not interested"), Part.Contains("don't need a quote"), Part.Contains("i'm fine"), Part.Contains("not really interested"), Part.Contains("not in arrested"), Part.Contains("that's okay thank you"), Part.Contains("no interest"), Part.Contains("stop calling"), Part.Contains("i'm good"), Part.Contains("all set"), Part.Contains("don't want it"), Part.Contains("not changing"), Part.Contains("i'm happy with"), Part.Contains("very happy"), Part.Contains("no thank you"), Part.Contains("not looking"), Part.Contains("don't wanna change"), Part.Contains("no thank you"), Part.Contains("don't need insurance"), Part.Contains("not shopping for car insurance") 'NI
                         speechSkip = True
                         newobjection = False
                         Console.WriteLine("NOT INTERESTED")
@@ -1409,10 +1409,29 @@ Public Class Form1
                                 Timer2.Enabled = True
                                 counter2 = 0
                         End Select
+                    Case Part.Contains("don't want to give that out"), Part.Contains("not giving that out"), Part.Contains("not telling"), Part.Contains("don't want to say")
 
+                        newobjection = False
+                        If CurrentQ = 3 Then
+                            CurrentQ = 0
+                        End If
+                        speechSkip = True
+                        Select Case counter
+                            Case 0
+                                RollTheClip("C:\SoundBoard\Cheryl\REBUTTALS\THIS WILL BE REAL QUICK.mp3")
+                                Timer2.Enabled = True
+                                NICount += 1
+                                Return True
+                            Case Else
+                                RollTheClip("c:\soundboard\cheryl\REBUTTALS\why do you need my info.mp3")
+                                Timer2.Enabled = True
+                                NICount += 1
+                                counter = 0
+                                Return True
+
+                        End Select
                     Case Part.Contains("busy"), Part.Contains("at work"), Part.Contains("driving"), Part.Contains("can't talk"), Part.Contains("call me back"), Part.Contains("could you call back"), Part.Contains("call back another time"), Part.Contains("call later"), Part.Contains("working right now"), Part.Contains("no time"), Part.Contains("don't have time")
                         newobjection = False
-
                         If CurrentQ = 3 Then
                             CurrentQ = 0
                         End If
@@ -1841,7 +1860,6 @@ Public Class Form1
                             Timer2.Enabled = True
                         Case "Single"
                             CurrentQ = 15
-                            RollTheClip("C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\ready to mingle.mp3")
                             Timer2.Enabled = True
                         Case "Divorced", "Separated", "Domestic Partner"
                             CurrentQ = 15
@@ -3114,7 +3132,6 @@ Public Class Form1
         stillthere = 0
         Part = e.PartialResult
         If Part <> "" Then
-            theSilence = 0
             If newobjection = True Then
                 Me.BeginInvoke(New Action(AddressOf HandlePartObjection))
                 Me.BeginInvoke(New Action(AddressOf handlepartquestion))
@@ -3204,7 +3221,7 @@ Public Class Form1
                     speechSkip = True
                     tmrObj.Enabled = True
 
-                Case Part.Contains("how did you get my info"), Part.Contains("where did you get my info")
+                Case Part.Contains("how did you get my info"), Part.Contains("where did you get my info"), Part.Contains("how you got my info"), Part.Contains("how'd you get my info")
                     Select Case quest
                         Case 1
                             Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
@@ -4376,7 +4393,7 @@ Public Class Form1
                     End Select
                 Case 3
 
-                    RollTheClip("C:\SoundBoard\Cheryl\INTRO\Opener 2.MP3")
+                    RollTheClip("C:\SoundBoard\Cheryl\INTRO\intro2.MP3")
                 Case 4
                     Select Case numReps
                         Case 0
@@ -5372,7 +5389,7 @@ Public Class Form1
                     lblStatus.Text = "STATUS: " & "INCALL"
                     Me.BackColor = Color.Green
                     introHello = True
-                    TmrSilence.Enabled = True
+
                     wbLeadInfo.Navigate("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" & txtVerifierNum.Text & "Function=pause_code&value=MGMT")
                     getLeadForm()
 
@@ -5385,6 +5402,7 @@ Public Class Form1
             ElseIf STATS.Contains("READY") Then
                 lblStatus.Text = "STATUS: " & "READY"
                 Me.BackColor = Color.Yellow
+                TmrSilence.Enabled = True
                 If Recording_status = True Then
                 End If
                 btnPause.Text = "Pause"
@@ -5506,7 +5524,6 @@ Public Class Form1
             stillthere += 1
             If introHello = True Then
                 RollTheClip("c:\soundboard\cheryl\INTRO\HELLO 1.mp3")
-                SilenceReps += 1
                 introHello = False
                 isQuestion = True
 
@@ -5522,7 +5539,7 @@ Public Class Form1
                 SilenceReps += 1
                 isQuestion = True
             End If
-            If SilenceReps >= 3 Then
+            If SilenceReps >= 2 Then
                 Console.WriteLine("has been " & stillthere & " seconds without response. Hanging up.")
                 RollTheClip("C:/Soundboard/Cheryl/reactions/have a great day.mp3")
                 cmbDispo.Text = "Not Available"
@@ -5555,6 +5572,7 @@ Public Class Form1
 
 
     Private Sub tmrObj_Tick(sender As Object, e As EventArgs) Handles tmrObj.Tick
+        TmrSilence.Enabled = False
         If CurrentQ = 3 Then
             CurrentQ = 0
         End If
@@ -5617,7 +5635,7 @@ Public Class Form1
         VehicleNum = cmbMoreVehicles.Text
     End Sub
 
-    Private Sub tmrEndSilence_Tick(sender As Object, e As EventArgs) Handles tmrEndSilence.Tick
+    Private Sub tmrEndSilence_Tick(sender As Object, e As EventArgs) Handles tmrEndSilence.Tick 'NEW SUB FOR END SILENCE
 
         Select Case CurrentQ
             Case 1, 2
@@ -5629,9 +5647,20 @@ Public Class Form1
                     theSilence = 0
                     tmrEndSilence.Enabled = False
                 End If
+            Case 7
+                theSilence += 1
+                Console.WriteLine("End Silence: " & theSilence)
+
+                If theSilence > 3 Then
+                    Console.WriteLine("End Silence is too much!: " & theSilence)
+                    m.EndMicAndRecognition()
+                    theSilence = 0
+                    tmrEndSilence.Enabled = False
+                End If
             Case Else
                 theSilence += 1
                 Console.WriteLine("End Silence: " & theSilence)
+
                 If theSilence > 2 Then
                     Console.WriteLine("End Silence is too much!: " & theSilence)
                     m.EndMicAndRecognition()
