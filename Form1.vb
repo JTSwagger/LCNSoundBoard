@@ -465,7 +465,10 @@ Public Class Form1
 
 
     Public Sub RollTheClip(Clip As String)
+        TmrSilence.Enabled=False
+        theSilence = 0
         tmrEndSilence.Enabled = False
+
         If Clip <> "NULL" Then
 
             waitCheck = 0
@@ -1341,7 +1344,7 @@ Public Class Form1
                         Timer2.Enabled = True
                         NICount += 1
                         Return True
-                    Case Part.Contains("no vehicle"), Part.Contains("sold the car"), Part.Contains("sold my car"), Part.Contains("no car"), Part.Contains("don't have a vehicle"), Part.Contains("don't") And Part.Contains("have a car"), Part.Contains("don't have an automobile"), Part.Contains("dont't have my own car"), Part.Contains("doesn't have a car"),
+                    Case Part.Contains("no vehicle"), Part.Contains("sold the car"), Part.Contains("sold my car"), Part.Contains("no car"), Part.Contains("don't have a vehicle"), Part.Contains("don't") And Part.Contains("have a car"), Part.Contains("don't have an automobile"), Part.Contains("dont't have my own car"), Part.Contains("doesn't have a car"), Part.Contains("don't drive")
                         newobjection = False
 
                         Console.WriteLine("THEY DON'T HAVE A CAR")
@@ -1418,7 +1421,7 @@ Public Class Form1
                         speechSkip = True
                         Select Case counter
                             Case 0
-                                RollTheClip("C:\SoundBoard\Cheryl\REBUTTALS\THIS WILL BE REAL QUICK.mp3")
+                                RollTheClip("c:\soundboard\cheryl\REBUTTALS\why do you need my info.mp3")
                                 Timer2.Enabled = True
                                 NICount += 1
                                 Return True
@@ -1430,7 +1433,7 @@ Public Class Form1
                                 Return True
 
                         End Select
-                    Case Part.Contains("busy"), Part.Contains("at work"), Part.Contains("driving"), Part.Contains("can't talk"), Part.Contains("call me back"), Part.Contains("could you call back"), Part.Contains("call back another time"), Part.Contains("call later"), Part.Contains("working right now"), Part.Contains("no time"), Part.Contains("don't have time")
+                    Case Part.Contains("busy"), Part.Contains("at work"), Part.Contains("driving"), Part.Contains("can't talk"), Part.Contains("can'True really talk"), Part.Contains("call me back"), Part.Contains("could you call back"), Part.Contains("call back another time"), Part.Contains("call later"), Part.Contains("working right now"), Part.Contains("no time"), Part.Contains("don't have time")
                         newobjection = False
                         If CurrentQ = 3 Then
                             CurrentQ = 0
@@ -1672,7 +1675,7 @@ Public Class Form1
             Case s.Contains("this is"), s.Contains("speaking"), s.Contains("you've got him"), s.Contains("you've got her"), s.Contains("yes"), s.Contains("yeah"), s.Contains("what's up?"), s.Contains("how can i help you"), s.Contains("hey"), s.Contains("what do you want"), s.Contains("hello"), s.Contains("hi"), s.Contains("his spouse"), s.Contains("her spouse"), s.Contains("his wife"), s.Contains("her husband")
                 Return True
 
-            Case s.Contains("not home"), s.Contains("he isn't"), s.Contains("not available"), s.Contains("he's not"), s.Contains(" a message"), s.Contains("he's working"), s.Contains("not here"), s.Contains("not right now"), s = "no"
+            Case s.Contains("not home"), s.Contains("he isn't"), s.Contains("not available"), s.Contains("he's not"), s.Contains(" a message"), s.Contains("he's working"), s.Contains("not here"), s.Contains("not right now"), s = "no", s.Contains("this is not")
                 RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
                 CurrentQ = 31
                 Timer2.Enabled = True
@@ -1687,12 +1690,12 @@ Public Class Form1
 
     Public Function CheckWhoseTalking2() As Boolean
         Select Case True
-            Case Part.Contains("this is"), Part.Contains("speaking"), Part.Contains("you've got him"), Part.Contains("you've got her"), Part.Contains("yes"), Part.Contains("yeah"), Part.Contains("what's up?"), Part.Contains("how can i help you"), Part.Contains("hey"), Part.Contains("what do you want"), Part.Contains("hello"), Part.Contains("hi")
+            Case Part.Contains("this is"), Part.Contains("speaking"), Part.Contains("you've got him"), Part.Contains("you've got her"), Part.Contains("yes"), Part.Contains("yeah"), Part.Contains("what's up?"), Part.Contains("how can i help you"), Part.Contains("hey"), Part.Contains("what do you want"), Part.Contains("hi")
                 Return True
-            Case Part.Contains("not home"), Part.Contains("he isn't"), Part.Contains("not available"), Part.Contains("he's not"), Part.Contains(" a message"), Part.Contains("he's working"), Part.Contains("not here"), Part.Contains("not right now")
+
+            Case Part.Contains("not home"), Part.Contains("he isn't"), Part.Contains("not available"), Part.Contains("he's not"), Part.Contains(" a message"), Part.Contains("he's working"), Part.Contains("not here"), Part.Contains("not right now"), Part.Contains("this is Not"), Part.Contains("this isn't")
                 RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
                 CurrentQ = 31
-
                 Timer2.Enabled = True
                 Return False
             Case Else
@@ -1771,7 +1774,7 @@ Public Class Form1
                     CurrentQ += 1
                     Timer2.Enabled = True
                 Else
-                    speechSkip = False
+                    Timer2.Enabled = True
                 End If
 
             Case 3                                                                              'STEP 3 INTRO->INSURANCE CARRIER
@@ -2082,7 +2085,7 @@ Public Class Form1
             Case s.Contains("rent")
                 residenceType = "Rent"
 
-            Case s.Contains("other")
+            Case s.Contains("other"), s.Contains("live there")
                 residenceType = "Other"
 
         End Select
@@ -4352,6 +4355,7 @@ Public Class Form1
         RollTheClip("C:/SoundBoard/Cheryl/Names/Vanessa Name.mp3")
     End Sub
     Public Sub AskQuestion(ByRef Pos As Integer, ByRef numReps As Integer)
+        tmrEndSilence.Enabled = False
         speechSkip = True
         Console.WriteLine("ASKING QUESTION: " & CurrentQ)
         Console.WriteLine("version:" & numReps)
@@ -5327,27 +5331,8 @@ Public Class Form1
     End Sub
     Dim UserList(4) As Integer
     Private Sub txtVerifierNum_Click(sender As Object, e As EventArgs) Handles txtVerifierNum.Click
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            Dim pass As String = "Jt55153910"
-            If InputBox("Password:", "Enter Password: ") = pass Then
-                txtVerifierNum.Text = InputBox("Temp User:", "Temp User")
-            Else
-                MsgBox("Incorrect Password!")
-            End If
-        Else
-            Select Case InputBox("Enter your User Code:")
-                Case 11837
-
-                Case 22878
-
-                Case 64539
 
 
-                Case 15975
-
-
-            End Select
-        End If
 
 
 
@@ -5651,7 +5636,7 @@ Public Class Form1
                 theSilence += 1
                 Console.WriteLine("End Silence: " & theSilence)
 
-                If theSilence > 3 Then
+                If theSilence > 2 Then
                     Console.WriteLine("End Silence is too much!: " & theSilence)
                     m.EndMicAndRecognition()
                     theSilence = 0
@@ -5661,7 +5646,7 @@ Public Class Form1
                 theSilence += 1
                 Console.WriteLine("End Silence: " & theSilence)
 
-                If theSilence > 2 Then
+                If theSilence > 1 Then
                     Console.WriteLine("End Silence is too much!: " & theSilence)
                     m.EndMicAndRecognition()
                     theSilence = 0

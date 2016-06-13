@@ -2199,6 +2199,7 @@ Partial Class Form1
         Me.txtVerifierNum.ReadOnly = True
         Me.txtVerifierNum.Size = New System.Drawing.Size(100, 20)
         Me.txtVerifierNum.TabIndex = 135
+        Me.txtVerifierNum.Text = "1198"
         '
         'Label32
         '
