@@ -3632,9 +3632,7 @@ Public Class Form1
                 theWindowTitle = theurl
                 newcall = False
                 theOldWindowTitle = theurl
-
             End If
-
         Else
             Try
                 newcall = False
@@ -5654,5 +5652,10 @@ Public Class Form1
                 End If
         End Select
 
+    End Sub
+
+    Private Sub Button30_Click_2(sender As Object, e As EventArgs) Handles Button30.Click
+
+        wbDispo.Navigate("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" & txtVerifierNum.Text & "&function=transfer_conference&value=BLIND_TRANSFER&phone_number=8603086718")
     End Sub
 End Class
