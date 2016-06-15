@@ -1722,7 +1722,7 @@ Public Class Form1
         isQuestion = False
         TmrSilence.Enabled = False
         stillthere = 0
-        txtSpeech.Text += "STEP: " & CurrentQ & ": " & s & vbNewLine 'ADDS RECEIVED SPEECH TO CUSTOMER SPEECH PANEL
+        txtSpeech.Text = "STEP: " & CurrentQ & ": " & s & vbNewLine 'ADDS RECEIVED SPEECH TO CUSTOMER SPEECH PANEL
         Select Case True
             Case s.Contains("could you repeat that"), s.Contains("what was that"), s.Contains("excuse me")
                 Timer2.Enabled = True
