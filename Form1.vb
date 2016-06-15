@@ -1368,8 +1368,7 @@ Public Class Form1
                         Select Case NICount
                             Case 0
                                 If counter2 < 2 Then
-                                    Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\I COMPLETELY UNDERSTAND.mp3"
-                                    Playlist(1) = ("C:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
+                                    RollTheClip("C:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
                                     NICount += 1
                                     counter2 += 1
                                     If CurrentQ = 3 Then
@@ -1387,13 +1386,8 @@ Public Class Form1
                             Case 1
 
                                 If counter2 < 2 Then
-
-                                    Playlist(0) = ("C:\SoundBoard\Cheryl\reactions\I get that 3.mp3 ")
-                                    Playlist(1) = ("C:\SoundBoard\Cheryl\REBUTTALS\REBUTTAL1.mp3")
+                                    RollTheClip("C:\SoundBoard\Cheryl\REBUTTALS\REBUTTAL1.mp3")
                                     numbreps += 1
-                                    If CurrentQ = 3 Then
-                                        CurrentQ = 0
-                                    End If
                                     counter2 += 1
                                     tmrObj.Enabled = True
 
@@ -1525,15 +1519,8 @@ Public Class Form1
                 Select Case numReps
                     Case 0
                         If counter2 < 2 Then
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\I COMPLETELY UNDERSTAND.mp3"
-                            Playlist(1) = ("C:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
-                            numReps += 1
-                            counter2 += 1
-                            If CurrentQ = 3 Then
-                                CurrentQ = 0
-                            End If
+                            RollTheClip("C:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
                             tmrObj.Enabled = True
-
                             Return True
                         Else
                             RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
@@ -1545,16 +1532,10 @@ Public Class Form1
                     Case 1
 
                         If counter2 < 2 Then
-
-                            Playlist(0) = ("C:\soundboard\cheryl\reactions\I Get that 1.mp3")
-                            Playlist(1) = ("C:\SoundBoard\Cheryl\REBUTTALS\REBUTTAL1.mp3")
+                            RollTheClip("C:\SoundBoard\Cheryl\REBUTTALS\REBUTTAL1.mp3")
                             numReps += 1
-                            If CurrentQ = 3 Then
-                                CurrentQ = 0
-                            End If
                             counter2 += 1
                             tmrObj.Enabled = True
-
                             Return True
                         Else
                             RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
@@ -1599,11 +1580,6 @@ Public Class Form1
                         Timer2.Enabled = True
                         numReps += 1
                         Return True
-
-
-                    Case Else
-                        Return True
-
                 End Select
             Case obj.Contains("wrong number"), obj.Contains("by that name"), obj.Contains("wrong phone number")
                 RollTheClip("c:\soundboard\cheryl\Rebuttals\SORRY.mp3")
@@ -1611,10 +1587,8 @@ Public Class Form1
                 CurrentQ = 31
                 Timer2.Enabled = True
                 Return True
-
             Case Else
                 Return False
-
         End Select
         Return False
     End Function  'Handles Objection based on full returned result
@@ -2278,7 +2252,8 @@ Public Class Form1
 
     Dim UnsureAboutCompany As Integer = 0
     Public Sub CheckForCompany()
-
+        Console.WriteLine("checking Company:......")
+        Console.WriteLine("Customer Said: " & s)
         If s.Contains("don't know") Or s.Contains("not sure") Or s.Contains("not certain") Then
             Select Case UnsureAboutCompany
                 Case 0
@@ -2666,7 +2641,7 @@ Public Class Form1
         Console.WriteLine("HUMAN EXPRESSION: " & HumanCounter)
         Select Case HumanCounter
             Case 1
-                RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\wonderful.mp3")
+                RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\OK.mp3")
                 HumanCounter += 1
                 Timer2.Enabled = True
             Case 2
@@ -3125,12 +3100,14 @@ Public Class Form1
 
     End Sub 'Handles when speech is sent back
     Sub enableTimer()
+        txtSpeech.Text = "Cherylbot heard: " & Part
         tmrEndSilence.Enabled = True
     End Sub
 
     Dim newobjection As Boolean = False
     Dim Part As String = ""
     Public Sub SomeSpeech(ByVal sender As Object, ByVal e As Microsoft.ProjectOxford.SpeechRecognition.PartialSpeechResponseEventArgs) Handles m.OnPartialResponseReceived
+        theSilence = 0
         Me.BeginInvoke(New Action(AddressOf enableTimer))
         stillthere = 0
         Part = e.PartialResult
@@ -3152,88 +3129,30 @@ Public Class Form1
 
             Select Case True
                 Case Part.Contains("who is this"), Part.Contains("who are you"), Part.Contains("who is calling"), Part.Contains("who's this"), Part.Contains("who's calling"), Part.Contains("who do you represent")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
-                    speechSkip = True
-                    If CurrentQ = 3 Then
-                        CurrentQ = 0
-                    End If
-                    Playlist(1) = "c:\soundboard\cheryl\INTRO\CHERYLCALLING.mp3"
+                    RollTheClip("c:\soundboard\cheryl\INTRO\CHERYLCALLING.mp3")
                     tmrObj.Enabled = True
-
                 Case Part.Contains("who makes it")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
                     RollTheClip("c:\soundboard\cheryl\REACTIONS\YES.mp3")
-
                 Case Part.Contains("what is this"), Part.Contains("what's this"), Part.Contains("what is the nature of this call"), Part.Contains("what are you calling about"), Part.Contains("what is purpose of this call")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
-                    speechSkip = True
+
                     If CurrentQ = 3 Then
                         CurrentQ = 0
                     End If
-                    Playlist(1) = "c:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3"
+                    RollTheClip("c:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
                     tmrObj.Enabled = True
 
                 Case Part.Contains("what is lcn"), Part.Contains("what is elsieanne"), Part.Contains("about your company"), s.Contains("lcn")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
                     speechSkip = True
-                    If CurrentQ = 3 Then
-                        CurrentQ = 0
-                    End If
-                    Playlist(1) = "c:\soundboard\cheryl\Rebuttals\What's LCN.mp3"
+                    RollTheClip("c:\soundboard\cheryl\Rebuttals\What's LCN.mp3")
                     tmrObj.Enabled = True
-
-
                 Case Part.Contains("why are you calling")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
-                    Playlist(1) = "c:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3"
+                    RollTheClip("c:\soundboard\cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3")
                     speechSkip = True
                     tmrObj.Enabled = True
 
                 Case Part.Contains("how did you get my info"), Part.Contains("where did you get my info"), Part.Contains("how you got my info"), Part.Contains("how'd you get my info")
-                    Select Case quest
-                        Case 1
-                            Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\THAT'S A GREAT QUESTION.mp3"
-                            quest += 1
-                        Case 2
-                            Playlist(0) = "C:\SoundBoard\Cheryl\Birthday\questions 5-4-16\questions 5-4-16\whatta great question.mp3"
-                            quest = 1
-                    End Select
-                    Playlist(0) = "c:\soundboard\cheryl\REBUTTALS\Where Did You get My info.mp3"
+
+                    RollTheClip("c:\soundboard\cheryl\REBUTTALS\Where Did You get My info.mp3")
                     speechSkip = True
                     tmrObj.Enabled = True
 
@@ -5560,31 +5479,12 @@ Public Class Form1
             CurrentQ = 0
         End If
         If waveOut.PlaybackState = 0 Then
-
-            If playcounter < 1 Then
-                RollTheClip(Playlist(playcounter))
-                playcounter += 1
-            ElseIf playcounter = 1 Then
-                If Playlist(1) <> "NULL" Then
-                    RollTheClip(Playlist(playcounter))
-                    playcounter += 1
-                Else
-                    playcounter = 0
-                    tmrObj.Enabled = False
-                    Playlist(0) = "NULL"
-                    Playlist(1) = "NULL"
-                End If
-            Else
-                playcounter = 0
-                counter += 1
-                tmrObj.Enabled = False
-                Playlist(0) = "NULL"
-                Playlist(1) = "NULL"
-                Timer2.Enabled = True
-            End If
+            playcounter = 0
+            counter += 1
+            tmrObj.Enabled = False
+            Timer2.Enabled = True
         End If
-
-    End Sub 'handles objection through 3 step rebuttal (attention, benefit, close)
+    End Sub
 
 
 
@@ -5624,7 +5524,7 @@ Public Class Form1
             Case 1, 2
                 theSilence += 1
                 Console.WriteLine("End Silence: " & theSilence)
-                If theSilence > 0 Then
+                If theSilence > 1 Then
                     Console.WriteLine("End Silence is too much!: " & theSilence)
                     m.EndMicAndRecognition()
                     theSilence = 0
@@ -5644,7 +5544,7 @@ Public Class Form1
                 theSilence += 1
                 Console.WriteLine("End Silence: " & theSilence)
 
-                If theSilence > 1 Then
+                If theSilence > 2 Then
                     Console.WriteLine("End Silence is too much!: " & theSilence)
                     m.EndMicAndRecognition()
                     theSilence = 0
