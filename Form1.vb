@@ -8,6 +8,7 @@ Imports System.Threading
 Imports System.ComponentModel
 Imports SpeechLib
 Imports Microsoft.ProjectOxford.SpeechRecognition
+Imports System.IO
 
 Public Class Form1
     <DllImport("User32.dll")>
@@ -32,75 +33,7 @@ Public Class Form1
     Dim counter As Integer = 0
     Dim numCounter As Integer = 0
     Dim counter2 As Integer = 0
-    Dim MAKELIST() As String =
-{"Acura",
-"Alfa Romeo",
-"AM General",
-"AMC",
-"Aston Martin",
-"Audi",
-"Bentley",
-"BMW",
-"Bugatti",
-"Buick",
-"Cadillac",
-"Chevrolet",
-"Chrysler",
-"Daewoo",
-"Daihatsu",
-"Datsun",
-"Dodge",
-"Eagle",
-"Ferrari",
-"FIAT",
-"Fisker",
-"Ford",
-"Geo",
-"GMC",
-"Honda",
-"HUMMER",
-"Hyundai",
-"Infiniti",
-"Isuzu",
-"Jaguar",
-"Jeep",
-"Kia",
-"Lamborghini",
-"Land Rover",
-"Lexus",
-"Lincoln",
-"Lotus",
-"Maserati",
-"Maybach",
-"Mazda",
-"McLaren",
-"Mercedes-Benz",
-"Mercury",
-"Merkur",
-"MINI",
-"Mitsubishi",
-"Nissan",
-"Oldsmobile",
-"Panoz",
-"Peugeot",
-"Plymouth",
-"Pontiac",
-"Porsche",
-"Ram",
-"Renault",
-"Rolls-Royce",
-"Saab",
-"Saturn",
-"Scion",
-"Smart",
-"Sterling",
-"Subaru",
-"Suzuki",
-"Tesla",
-"Toyota",
-"Volkswagen",
-"Volvo",
-"Yugo"}
+
     Dim stringarray2() As String
     Dim LifeQual As Boolean = False
     Dim HomeQual As Boolean = False
@@ -179,6 +112,12 @@ Public Class Form1
     Dim POLEnd As String
     Dim VEHICLE As String
     Dim CurrentQ As Integer
+
+
+    Dim penguinPregunta As String = "intro"
+    ' this is important and shouldn't be deleted or have its name changed. 
+
+
     Dim LastCustomer
     Dim CustomerName As String
     Dim globalFile As String
@@ -465,7 +404,13 @@ Public Class Form1
 
 
     Public Sub RollTheClip(Clip As String)
-        TmrSilence.Enabled=False
+
+        If isAudioPlaying = False Then
+            ' this is a good thing.
+            isAudioPlaying = True
+        End If
+
+        TmrSilence.Enabled = False
         theSilence = 0
         tmrEndSilence.Enabled = False
 
@@ -1714,256 +1659,17 @@ Public Class Form1
     End Function
 
     Public Sub handleResponse()
-        m.EndMicAndRecognition()
-        SilenceReps = 0
-        stillthere = 0
-        speechSkip = True
-        dontKnowCount = 0
-        isQuestion = False
-        TmrSilence.Enabled = False
-        stillthere = 0
-        txtSpeech.Text = "STEP: " & CurrentQ & ": " & s & vbNewLine 'ADDS RECEIVED SPEECH TO CUSTOMER SPEECH PANEL
-        Select Case True
-            Case s.Contains("could you repeat that"), s.Contains("what was that"), s.Contains("excuse me")
-                Timer2.Enabled = True
-        End Select
-        Select Case CurrentQ
-            Case 1                                                                                          'STEP 1 - INTRODUCTION
-                If Not isMachine() Then
-                    If My.Computer.FileSystem.FileExists(globalFile2) Then
-
-                        CurrentQ += 1
-                        Timer2.Enabled = True
-                    Else
-                        CurrentQ += 2
-                        Timer2.Enabled = True
-                    End If
-                End If
-
-            Case 2                                                                                          'STEP 2 - IS IT WHO WE ARE LOOKING FOR?
-
-                If CheckWhoseTalking() = True Then
-                    counter = 0
-                    counter2 = 0
-                    CurrentQ += 1
-                    Timer2.Enabled = True
-                Else
-                    Timer2.Enabled = True
-                End If
-
-            Case 3                                                                              'STEP 3 INTRO->INSURANCE CARRIER
-                CheckForCompany()
-                If CurrentQ = 4 Then
-                    Console.WriteLine("company is good")
-                    counter = 0
-                    counter2 = 0
-                    RandomHumanism()
-                ElseIf CurrentQ = 6 Then
-                    Console.WriteLine("NO INSURANCE")
-                    counter = 0
-                    counter2 = 0
-                    RollTheClip("c:\soundboard\cheryl\REBUTTALS\That's okay.mp3")
-                    Timer2.Enabled = True
-                End If
-            Case 4 'POLICY EXPIRATION
-
-                checkExpiration()
-                If CurrentQ = 5 Then
-                    counter = 0
-                    counter2 = 0
-                    RandomHumanism()
-                End If
-
-            Case 5 'HOW LONG
-                CheckHowLong()
-                CurrentQ += 1
-                If CurrentQ > 5 Then
-                    counter = 0
-                    counter2 = 0
-                    RandomHumanism()
-                End If
-            Case 6
-                If checkForNumVehicles() Then
-                    CurrentQ += 1
-                    RandomHumanism()
-                Else
-                    speechSkip = False
-                End If
-                Console.WriteLine("HAS " & NumberOfVehicles & " VEHICLES")
-            Case 7 'VEHICLE YEAR
-
-                getYear(VehicleNum)
-                If CurrentQ > 6 Then
-                    counter = 0
-                    counter2 = 0
-                    RandomHumanism()
-                End If
-            Case 8 'VEHICLE MAKE
-                Console.WriteLine("HAS " & NumberOfVehicles & " VEHICLES")
-                getMake(VehicleNum)
-                If CurrentQ > 7 Then
-                    counter = 0
-                End If
-            Case 9 'VEHICLE MODEL
-                Console.WriteLine("HAS " & NumberOfVehicles & " VEHICLES")
-                Console.WriteLine("STEP 8: " & s)
-                getModel(VehicleNum)
-
-            Case 10
-                counter = 0
-                If getBirthdaWAV() Then
-                    If GetBirthday() Then
-                        CurrentQ = 11
-                        RandomHumanism()
-                    Else
-                        repeatPlease()
-                    End If
-                Else
-                    spouseBDAY = getSpouseBDAY(False)
-                    RandomHumanism()
-                End If
-
-
-            Case 11
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    checkMaritalStatus()
-                    Select Case maritalStatus
-                        Case "Married"
-                            CurrentQ = 12
-                            RandomHumanism()
-                        Case "Widowed"
-                            CurrentQ = 15
-                            RollTheClip("C:\SoundBoard\Cheryl\REBUTTALS\Sorry to hear that 2.mp3")
-                            Timer2.Enabled = True
-                        Case "Single"
-                            CurrentQ = 15
-                            Timer2.Enabled = True
-                        Case "Divorced", "Separated", "Domestic Partner"
-                            CurrentQ = 15
-                            Timer2.Enabled = True
-                        Case Else
-                            repeatPlease()
-                    End Select
-                Else
-
-                End If
-
-            Case 12
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    If checkForSpouseName() Then
-                        CurrentQ = 13
-                        RandomHumanism()
-                    End If
-                End If
-            Case 13
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    spouseBDAY = getSpouseBDAY(True)
-                    RandomHumanism()
-                End If
-
-            Case 14
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    If custBday Then
-                        If finalizeSpouseBDay(False) Then
-                            RandomHumanism()
-                        Else
-                            CurrentQ = 10
-                            repeatPlease()
-                            Timer2.Enabled = True
-                        End If
-                        custBday = False
-
-                    Else
-                        If finalizeSpouseBDay(True) Then
-                            CurrentQ = 15
-                            RandomHumanism()
-                        Else
-                            CurrentQ = 13
-                            repeatPlease()
-                            Timer2.Enabled = True
-                        End If
-                    End If
-                End If
-            Case 15
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    If getHomeType() Then
-                        CurrentQ += 1
-                        RandomHumanism()
-                    End If
-                End If
-            Case 16
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    If getResType() Then
-                        CurrentQ += 1
-                        RandomHumanism()
-                    End If
-                End If
-            Case 17
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    getAddressNum()
-                    CurrentQ += 1
-                    RandomHumanism()
-
-                End If
-            Case 18
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    finalizeAddress()
-                    CurrentQ += 1
-                    RandomHumanism()
-                End If
-            Case 19
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    getEmail()
-                    CurrentQ += 2
-                    RandomHumanism()
-                End If
-
-            Case 21
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    HandleCredit()
-                    CurrentQ += 1
-                    RandomHumanism()
-                End If
-            Case 22
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    HandlePhoneType()
-                    CurrentQ += 1
-                    RandomHumanism()
-                End If
-            Case 23
-                If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
-                    HandleLastName()
-                    CurrentQ += 6
-                    RandomHumanism()
-                End If
-            Case 29
-                handleTCPA()
-
-
-        End Select
-
-
-    End Sub  'MAIN SPEECH DECISION SUBROUTINE (PASSES OFF BASED ON CONTEXT) 
-    Public Sub handleTCPA()
-        Select Case True
-            Case s.Contains("yes"), s.Contains("sure"), s.Contains("okay"), s.Contains("ok"), s.Contains("sounds good"), s.Contains("affirmative"), s.Contains("alright")
-                cmbDispo.Text = "Auto Lead"
-                CurrentQ = 31
-                RollTheClip("C:/Soundboard/Cheryl/WRAPUP/ENDCALL.mp3")
-                Timer2.Enabled = True
-            Case Else
-                RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
-                cmbDispo.Text = "Lost On Wrap Up"
-                CurrentQ = 31
-                RollTheClip("C:/Soundboard/Cheryl/WRAPUP/ENDCALL.mp3")
-                Timer2.Enabled = True
-        End Select
+        ' I just ripped out a huge part of the program. Sue me. 
     End Sub
+
+
     Public Sub HandleLastName()
         LeadForm.Document.GetElementById("frmLastName").SetAttribute("value", s)
 
 
     End Sub
+
+
     Public Sub HandlePhoneType()
         Select Case True
             Case s.Contains("mobile"), s.Contains("cell")
@@ -2251,6 +1957,94 @@ Public Class Form1
     Public Sub updateSpeechText()
         txtSpeech.Text += "::SPEECH ENDED::" & vbNewLine
     End Sub 'so speech text can be done crossthreaded
+
+    Public Function getCompanyList() As List(Of String)
+        Dim compList As List(Of String) = New List(Of String)
+        Dim reader As StreamReader = New StreamReader("\lists\companies.txt")
+        Try
+            Do
+                compList.Add(reader.ReadLine)
+            Loop Until reader.Peek = -1
+        Catch
+            Console.WriteLine("file is empty, we good")
+        Finally
+            reader.Close()
+        End Try
+
+        Return compList
+    End Function
+    Public Function newCheckCompany() As String
+        Console.WriteLine("We're in newCheckCompany now.")
+        Console.WriteLine("here be dragons")
+
+        Dim companyList As List(Of String) = getCompanyList()
+
+        ' roll "What insurance company do you have?" clip
+
+        m.StartMicAndRecognition()
+        Dim speechResponse As String = s
+        m.EndMicAndRecognition()
+
+        If speechResponse.Contains("none") Or speechResponse.Contains("don't have") Or speechResponse.Contains("don't got") Then
+            Return "None"
+        End If
+
+        If speechResponse.Contains("don't know") Or speechResponse.Contains("not sure") Or speechResponse.Contains("not certain") Then
+            m.StartMicAndRecognition()
+            speechResponse = s
+            m.EndMicAndRecognition()
+
+            If speechResponse.Contains("don't know") Or speechResponse.Contains("not sure") Or speechResponse.Contains("not certain") Then
+                Return "progressive"
+            End If
+        End If
+
+        For Each company As String In companyList
+            If speechResponse.Contains(company) Then
+                Return company
+            Else
+                Return "progressive"
+            End If
+        Next
+
+        ' theoretically, this is never reached, but VS was complaining. 
+        Return "progressive"
+    End Function
+
+    Public Function checkAlive() As Boolean
+        m.StartMicAndRecognition()
+        If s.Length > 0 Then
+            m.EndMicAndRecognition()
+            Return True
+        Else
+            m.EndMicAndRecognition()
+            Return False
+        End If
+
+        ' short circuit
+        m.EndMicAndRecognition()
+        Return False
+    End Function
+
+    Public Function checkPerson() As String
+        ' roll "Is *blahperson* available?" clip
+        m.StartMicAndRecognition()
+        Dim speechResponse As String = s
+        m.EndMicAndRecognition()
+
+        If speechResponse.Contains("no") Or speechResponse.Contains("not now") Then
+            Return "notavailable"
+        End If
+        If speechResponse.Contains("wrong number") Or speechResponse.Contains("this isn't") Then
+            Return "wrongnum"
+        End If
+        If speechResponse.Contains("yes") Or speechResponse.Contains("this is") Then
+            Return "available"
+        End If
+
+        'short circuit
+        Return "notavailable"
+    End Function
 
     Dim UnsureAboutCompany As Integer = 0
     Public Sub CheckForCompany()
@@ -4280,7 +4074,7 @@ Public Class Form1
     End Sub
     Dim skip As Boolean = False
     Private Sub results_TextChanged(sender As Object, e As EventArgs) Handles results.TextChanged
-
+        ' what even is this
     End Sub
 
 
@@ -4289,230 +4083,41 @@ Public Class Form1
     Private Sub Button18_Click_3(sender As Object, e As EventArgs)
         RollTheClip("C:/SoundBoard/Cheryl/Names/Vanessa Name.mp3")
     End Sub
-    Public Sub AskQuestion(ByRef Pos As Integer, ByRef numReps As Integer)
-        tmrEndSilence.Enabled = False
-        speechSkip = True
-        Console.WriteLine("ASKING QUESTION: " & CurrentQ)
-        Console.WriteLine("version:" & numReps)
-        isQuestion = True
-        Try
-            s = ""
-            Part = ""
+    Dim isAskingQuestion As Boolean
+    'ASKS THE NEXT QUESTION TO KEEP THE CALL MOVING
+    Public Sub AskQuestion()
+        ' Let's rip out more of the application. For science. 
+        Console.WriteLine("asking a question.")
+        Console.WriteLine("That question is {0}", penguinPregunta)
+        Select Case penguinPregunta
+            Case "intro"
+                If isMachine() Or Not checkAlive() Then
+                    ' dispo call as NA
+                    penguinPregunta = "disconnect"
+                End If
+                Select Case checkPerson()
+                    Case "notavailable"
+                        ' dispo as NA
+                    Case "wrongnum"
+                        ' dispo as wrong number
+                    Case "available"
+                        ' roll Intro shpiel clip
+                        penguinPregunta = "company"
+                End Select
+            Case "company"
+                Dim company As String = newCheckCompany()
+                ' set form company to the above variable
+                penguinPregunta = "expiry"
+        End Select
+        If penguinPregunta <> "alldone" And penguinPregunta <> "disconnected" Then
+            AskQuestion()
+        End If
 
-            newobjection = False
-            lblQuestion.Text = CURRENTQUESTION(Pos)
-            Select Case Pos
-                Case 0
-                    Select Case numReps
-                        Case 0
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\Ins provider 1.mp3")
-                            CurrentQ = 3
-                        Case 1
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\Ins provider 2.mp3")
-                            CurrentQ = 3
-                        Case Else
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\Ins provider 3.mp3")
-                            CurrentQ = 3
-                            numReps = 0
+        ' should only fire upon getting through every single question or getting disconnected
+        Console.WriteLine("we made it boys!")
+    End Sub
 
-                    End Select
-                    CurrentQ = 3
 
-                Case 1
-                    RollTheClip("c:\soundboard\cheryl\INTRO\HELLO.mp3")
-                Case 2
-                    Select Case numReps
-                        Case 0
-                            RollTheClip(globalFile)
-
-                        Case 1
-                            RollTheClip(globalfile3)
-                        Case Else
-                            RollTheClip(globalFile2)
-                    End Select
-                Case 3
-
-                    RollTheClip("C:\SoundBoard\Cheryl\INTRO\intro2.MP3")
-                Case 4
-                    Select Case numReps
-                        Case 0
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\EXPIRATION.mp3")
-                        Case 1
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\policy exp 1.mp3")
-                        Case 2
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\policy exp 2.mp3")
-                        Case Else
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\policy exp 3.mp3")
-                    End Select
-                Case 5
-                    Select Case numReps
-                        Case 0
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\And How many years have you been with them.mp3")
-                        Case 1
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\years with 1.mp3")
-                        Case 2
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\years with 2.mp3")
-                        Case Else
-                            RollTheClip("c:\soundboard\cheryl\INSURANCE INFO\years with 3.mp3")
-                    End Select
-                Case 6
-                    RollTheClip("C:/SOUNDBOARD/CHERYL/VEHICLE INFO/HOW MANY VEHICLES DO YOU HAVE.MP3")
-                Case 7
-
-                    Console.WriteLine("on vehicle: " & VehicleNum)
-                    Select Case VehicleNum
-                        Case 1
-                            Select Case NumberOfVehicles
-                                Case 1
-                                    RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3")
-                                Case Else
-                                    RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3")
-                            End Select
-                        Case 2
-                            RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\2nd Vehicle.mp3")
-                        Case 3
-                            RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\Third Vehicle.mp3")
-                        Case 4
-                            RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\Fourth Vehicle.mp3")
-                    End Select
-
-                Case 8
-                    RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\who makes that vehicle.mp3")
-                Case 9
-                    RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\what is the model of the car 1.mp3")
-                Case 10
-
-                    If getBirthdaWAV() = True Then
-                        tbCallOrder.SelectedTab = tbDriverInfo
-                        LeadForm.Document.GetElementById("frmDOB_Month").Focus()
-                        isQuestion = False
-                        tmrBirthday.Enabled = True
-
-                    Else
-                        RollTheClip("c:\soundboard\cheryl\DRIVER INFO\DOB1.mp3")
-
-                    End If
-                Case 11
-                    RollTheClip("c:\soundboard\cheryl\DRIVER INFO\MaritalStatus2.mp3")
-                Case 12
-                    RollTheClip("c:\soundboard\cheryl\DRIVER INFO\SPOUSES FIRST NAME.mp3")
-                Case 13
-                    RollTheClip("c:\soundboard\cheryl\DRIVER INFO\SPOUSES DATE OF BIRTH.mp3")
-                Case 14
-                    RollTheClip("c:\soundboard\cheryl\REBUTTALS\CAN YOU JUST VERIFY THE MONTH.mp3")
-                Case 15
-                    RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\DO YOU OWN OR RENT THE HOME.mp3")
-                Case 16
-                    RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\HOMETYPE.mp3")
-                Case 17
-                    RollTheClip("c:\soundboard\cheryl\REACTIONS\COULD YOU PLEASE VERIFY YOUR ADDRESS.mp3")
-                Case 18
-                    RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\Spell out address.mp3")
-                Case 19
-                    RollTheClip("C:\SoundBoard\Cheryl\PERSONAL INFO\EMAIL.mp3")
-                Case 20
-                    RollTheClip("C:\Users\Insurance Express\Documents\LCNSoundBoard\LCNSoundBoard\LCNSoundBoard\bin\Debug\c:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Email Rebuttal.mp3")
-                Case 21
-                    RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\Credit.mp3")
-                Case 22
-                    RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\PhoneType.mp3")
-                Case 23
-                    RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\LAST NAME.mp3")
-                Case 24
-                    If LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Own" Then
-                        HomeQual = True
-                        rentQual = False
-                    ElseIf LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Rent" Then
-                        rentQual = True
-                        HomeQual = False
-                    End If
-                    If HomeQual = True And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Life Medicare.mp3")
-                        Timer2.Enabled = False
-                    ElseIf renterQual = True And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters and Medicare.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = False And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = True And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = False And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Medicare.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = False And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Medicare.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = False And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental Insurance Pitch.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = True And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = False And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf renterQual = True And LifeQual = True And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health and Life.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = False And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = True And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home insurance.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = True And LifeQual = False And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Health.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf HomeQual = False And LifeQual = True And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Health Insurance Pitch.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = False And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\Rental Insurance Pitch.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = True And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
-                        Timer2.Enabled = False
-
-                    ElseIf rentQual = True And LifeQual = False And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental and Health Pitch.mp3")
-                        Timer2.Enabled = False
-                    End If
-                Case 25
-                    RollTheClip("c:\soundboard\cheryl\WRAPUP\YEARBUILT.mp3")
-                    Timer2.Enabled = False
-                Case 26
-                    RollTheClip("c:\soundboard\cheryl\WRAPUP\SQUARE FOOTAGE.mp3")
-                    Timer2.Enabled = False
-                Case 27
-                    RollTheClip("c:\soundboard\cheryl\WRAPUP\TCPA.mp3")
-                    Timer2.Enabled = False
-                Case 28
-                    Timer2.Enabled = False
-                    NICount = 0
-            End Select
-
-        Catch ex As Exception
-            Console.WriteLine(ex)
-        End Try
-        isQuestion = True
-        counter += 1
-    End Sub     'ASKS THE NEXT QUESTION TO KEEP THE CALL MOVING
     Dim NATotal As Integer
     Dim NITotal As Integer
     Dim DNCTotal As Integer
@@ -5475,21 +5080,15 @@ Public Class Form1
     Dim micStatus As Boolean
     Dim isQuestion As Boolean = True
 
-    Public Sub isStopped(sender As Object, e As NAudio.Wave.StoppedEventArgs) Handles waveOut.PlaybackStopped
+    Dim isAudioPlaying As Boolean
+    Public Sub HandleAudioStop(sender As Object, e As NAudio.Wave.StoppedEventArgs) Handles waveOut.PlaybackStopped
 
-        speechSkip = False
-        newobjection = True
-        If isQuestion Then
-            m.StartMicAndRecognition()
-            isQuestion = False
-            introHello = False
-            TmrSilence.Enabled = True
-        Else
-
+        If isAudioPlaying <> True Then
+            Console.WriteLine("wtf, how is is raising a stop event when it's already stopped?!")
         End If
+        isAudioPlaying = False
 
-    End Sub 'checks to see if clip is stopped 
-
+    End Sub ' if clip is stopped, set a global boolean isAudioPlaying to False. This is useful.
 
     Private Sub tmrObj_Tick(sender As Object, e As EventArgs) Handles tmrObj.Tick
         TmrSilence.Enabled = False
