@@ -1995,6 +1995,8 @@ Public Class Form1
     End Sub
     Public Sub getEmail()
         Console.WriteLine(s)
+        Dim emailAddr As String = s
+        LeadForm.Document.GetElementById("frmEmailAddress").SetAttribute("value", emailAddr)
     End Sub
 
     Public Sub finalizeAddress()
@@ -2695,11 +2697,27 @@ Public Class Form1
                 End If
 
             Case s.Contains("month to month") Or s.Contains("month by month")
+                ' debug
+                Console.WriteLine()
+                Console.WriteLine("month to month carl")
+                Console.WriteLine()
+                ' end debug
                 theYear = Now.Year
                 theMonth = Now.Month + 1
+                LeadForm.Document.GetElementById("frmPolicyExpires_Month").SetAttribute("value", CStr(theMonth))
+                LeadForm.Document.GetElementById("frmPolicyExpires_Year").SetAttribute("value", theYear)
+                CurrentQ = 5
             Case s.Contains("next year")
+                ' debug
+                Console.WriteLine()
+                Console.WriteLine("next year carl")
+                Console.WriteLine()
+                'end debug
                 theYear = Date.Now.Year + 1
                 theMonth = Date.Now.Month
+                LeadForm.Document.GetElementById("frmPolicyExpires_Month").SetAttribute("value", CStr(theMonth))
+                LeadForm.Document.GetElementById("frmPolicyExpires_Year").SetAttribute("value", theYear)
+                CurrentQ = 5
             Case s.Contains("just renewed"), s.Contains("been renewed")
 
                 theMonth = Date.Now.Month + 6
@@ -3080,7 +3098,7 @@ Public Class Form1
     Dim theSilence As Integer = 0
     Public Sub GotSpeech(ByVal sender As Object, ByVal e As Microsoft.ProjectOxford.SpeechRecognition.SpeechResponseEventArgs) Handles m.OnResponseReceived
         Console.WriteLine(speechSkip)
-        TheSilence = 0
+        theSilence = 0
         If Not speechSkip Then
 
             If e.PhraseResponse.Results.Length > 0 Then
@@ -5334,7 +5352,7 @@ Public Class Form1
                 lblCalls2.Text = tempStr(11)
             End If
         Catch ex As Exception
-            MsgBox(ex)
+            'MsgBox(ex)
         End Try
 
 
