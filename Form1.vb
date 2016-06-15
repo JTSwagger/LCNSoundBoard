@@ -2697,22 +2697,12 @@ Public Class Form1
                 End If
 
             Case s.Contains("month to month") Or s.Contains("month by month")
-                ' debug
-                Console.WriteLine()
-                Console.WriteLine("month to month carl")
-                Console.WriteLine()
-                ' end debug
                 theYear = Now.Year
                 theMonth = Now.Month + 1
                 LeadForm.Document.GetElementById("frmPolicyExpires_Month").SetAttribute("value", CStr(theMonth))
                 LeadForm.Document.GetElementById("frmPolicyExpires_Year").SetAttribute("value", theYear)
                 CurrentQ = 5
             Case s.Contains("next year")
-                ' debug
-                Console.WriteLine()
-                Console.WriteLine("next year carl")
-                Console.WriteLine()
-                'end debug
                 theYear = Date.Now.Year + 1
                 theMonth = Date.Now.Month
                 LeadForm.Document.GetElementById("frmPolicyExpires_Month").SetAttribute("value", CStr(theMonth))
