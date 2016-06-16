@@ -2007,7 +2007,9 @@ Public Class Form1
     End Sub
 
     Public Sub finalizeAddress()
-        NewAddress += " " & s
+        Dim tempAddr As String = s
+        tempAddr.Replace(".", "")
+        NewAddress += " " & tempAddr
         Console.WriteLine(NewAddress)
         LeadForm.Document.GetElementById("frmAddress").SetAttribute("value", NewAddress)
     End Sub
