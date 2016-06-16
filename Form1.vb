@@ -2001,8 +2001,12 @@ Public Class Form1
     End Sub
 
     Public Sub getEmail()
-        Console.WriteLine(s)
         Dim emailAddr As String = s
+        Console.WriteLine("unparsed email addr: {0}", emailAddr)
+        emailAddr = emailAddr.Replace(" ", "").Replace("at", "@")
+        If emailAddr.Substring(-1) = "." Then
+            Console.WriteLine("parsed email addr: {0}", emailAddr)
+        End If
         LeadForm.Document.GetElementById("frmEmailAddress").SetAttribute("value", emailAddr)
     End Sub
 
