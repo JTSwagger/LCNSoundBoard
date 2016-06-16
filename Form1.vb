@@ -1754,13 +1754,47 @@ Public Class Form1
     End Function
 
     Public fullMonths As List(Of String)
-    Public Function parseBirthday(speechResponse As String) As String
-        Dim numberBirthday As Integer
-        Dim tryParse As Boolean = Int32.TryParse(speechResponse, numberBirthday)
-        If tryParse = False Then
-            Console.WriteLine("birthday input is not all numbers, boldly continuing on...")
-        End If
+    Public Function parseBirthday(numberBirthday As Integer) As Object
         ' here be dragons 
+        Dim bday As String = numberBirthday.ToString
+
+        Dim birthdayObj(2) As Object
+        ' [0] = month [1] = day [2] = year
+
+        Select Case bday.Length
+            Case 4
+                ' birthday is in the format m-d-yy
+                birthdayObj(0) = bday.Chars(0)
+                birthdayObj(1) = bday.Chars(1)
+                birthdayObj(2) = "19" + bday.Substring(2, 2)
+                Return birthdayObj
+            Case 8
+                ' format mm-dd-yyyy
+                birthdayObj(0) = bday.Substring(0, 2)
+                birthdayObj(1) = bday.Substring(2, 2)
+                birthdayObj(2) = bday.Substring(4, 4)
+                Return birthdayObj
+            Case 6
+                ' format EITHER m-d-yyyy OR mm-dd-yy
+
+                ' check for m-d-yyyy 
+                If bday.Substring(3, 4).Substring(0, 2) = "19" Then
+                    birthdayObj(0) = bday.Substring(0, 1)
+                    birthdayObj(1) = bday.Substring(1, 1)
+                    birthdayObj(2) = bday.Substring(3, 4)
+                    Return birthdayObj
+                    ' check for mm-dd-yy
+                ElseIf bday.Substring(3, 4).Substring(0, 2) <> "19" Then
+                    birthdayObj(0) = bday.Substring(0, 2)
+                    birthdayObj(1) = bday.Substring(2, 2)
+                    birthdayObj(2) = bday.Substring(3, 2)
+                End If
+            Case 5
+                Console.WriteLine("dragons")
+            Case 7
+                Console.WriteLine("dragons")
+
+        End Select
 
     End Function
 
