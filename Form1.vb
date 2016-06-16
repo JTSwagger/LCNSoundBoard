@@ -1713,6 +1713,8 @@ Public Class Form1
 
     End Function
 
+    Dim isMarried As Boolean = False
+
     Public Sub handleResponse()
         m.EndMicAndRecognition()
         SilenceReps = 0
@@ -1851,6 +1853,7 @@ Public Class Form1
             Case 12
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     If checkForSpouseName() Then
+                        isMarried = True
                         CurrentQ = 13
                         RandomHumanism()
                     End If
@@ -1866,12 +1869,17 @@ Public Class Form1
                     If custBday Then
                         If finalizeSpouseBDay(False) Then
                             RandomHumanism()
+                            If isMarried Then
+                                custBday = False
+                            ElseIf isMarried = False Then
+                                CurrentQ = 15
+                            End If
                         Else
                             CurrentQ = 10
                             repeatPlease()
                             Timer2.Enabled = True
                         End If
-                        custBday = False
+
 
                     Else
                         If finalizeSpouseBDay(True) Then
@@ -1887,14 +1895,14 @@ Public Class Form1
             Case 15
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     If getHomeType() Then
-                        CurrentQ += 1
+                        CurrentQ = 16
                         RandomHumanism()
                     End If
                 End If
             Case 16
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     If getResType() Then
-                        CurrentQ += 1
+                        CurrentQ = 17
                         RandomHumanism()
                     End If
                 End If
@@ -1908,35 +1916,35 @@ Public Class Form1
             Case 18
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     finalizeAddress()
-                    CurrentQ += 1
+                    CurrentQ = 19
                     RandomHumanism()
                 End If
             Case 19
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     getEmail()
-                    CurrentQ += 2
+                    CurrentQ = 21
                     RandomHumanism()
                 End If
 
             Case 21
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     HandleCredit()
-                    CurrentQ += 1
+                    CurrentQ = 22
                     RandomHumanism()
                 End If
             Case 22
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     HandlePhoneType()
-                    CurrentQ += 1
+                    CurrentQ = 23
                     RandomHumanism()
                 End If
             Case 23
                 If HandleQuestion(s) = False And HandleObjection(s, NICount) = False Then
                     HandleLastName()
-                    CurrentQ += 6
+                    CurrentQ = 27
                     RandomHumanism()
                 End If
-            Case 29
+            Case 27
                 handleTCPA()
 
 
@@ -4408,87 +4416,87 @@ Public Class Form1
                     RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\PhoneType.mp3")
                 Case 23
                     RollTheClip("c:\soundboard\cheryl\PERSONAL INFO\LAST NAME.mp3")
-                Case 24
-                    If LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Own" Then
-                        HomeQual = True
-                        rentQual = False
-                    ElseIf LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Rent" Then
-                        rentQual = True
-                        HomeQual = False
-                    End If
-                    If HomeQual = True And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Life Medicare.mp3")
-                        Timer2.Enabled = False
-                    ElseIf renterQual = True And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters and Medicare.mp3")
-                        Timer2.Enabled = False
+                'Case 24
+                '    If LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Own" Then
+                '        HomeQual = True
+                '        rentQual = False
+                '    ElseIf LeadForm.Document.GetElementById("frmResidenceType").GetAttribute("value") = "Rent" Then
+                '        rentQual = True
+                '        HomeQual = False
+                '    End If
+                '    If HomeQual = True And LifeQual = True And Mediqual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Life Medicare.mp3")
+                '        Timer2.Enabled = False
+                '    ElseIf renterQual = True And LifeQual = True And Mediqual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters and Medicare.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = False And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = False And Mediqual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = True And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = True And Mediqual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = False And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Medicare.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = False And Mediqual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Medicare.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = False And LifeQual = True And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Medicare.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = False And LifeQual = True And Mediqual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Medicare.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = False And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental Insurance Pitch.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = False And Mediqual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental Insurance Pitch.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = True And Mediqual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = True And Mediqual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = False And Mediqual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = False And Mediqual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf renterQual = True And LifeQual = True And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health and Life.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf renterQual = True And LifeQual = True And HealthQual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Renters Health and Life.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = False And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = False And HealthQual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home Pitch.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = True And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home insurance.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = True And HealthQual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\life and home insurance.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = True And LifeQual = False And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Health.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = True And LifeQual = False And HealthQual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Home and Health.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf HomeQual = False And LifeQual = True And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Health Insurance Pitch.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf HomeQual = False And LifeQual = True And HealthQual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Life and Health Insurance Pitch.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = False And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\Rental Insurance Pitch.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = False And HealthQual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\Rental Insurance Pitch.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = True And HealthQual = False Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
-                        Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = True And HealthQual = False Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\rental and life insurance.mp3")
+                '        Timer2.Enabled = False
 
-                    ElseIf rentQual = True And LifeQual = False And HealthQual = True Then
-                        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental and Health Pitch.mp3")
-                        Timer2.Enabled = False
-                    End If
-                Case 25
-                    RollTheClip("c:\soundboard\cheryl\WRAPUP\YEARBUILT.mp3")
-                    Timer2.Enabled = False
-                Case 26
-                    RollTheClip("c:\soundboard\cheryl\WRAPUP\SQUARE FOOTAGE.mp3")
-                    Timer2.Enabled = False
+                '    ElseIf rentQual = True And LifeQual = False And HealthQual = True Then
+                '        RollTheClip("C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\Rental and Health Pitch.mp3")
+                '        Timer2.Enabled = False
+                '    End If
+                'Case 25
+                '    RollTheClip("c:\soundboard\cheryl\WRAPUP\YEARBUILT.mp3")
+                '    Timer2.Enabled = False
+                'Case 26
+                '    RollTheClip("c:\soundboard\cheryl\WRAPUP\SQUARE FOOTAGE.mp3")
+                '    Timer2.Enabled = False
                 Case 27
                     RollTheClip("c:\soundboard\cheryl\WRAPUP\TCPA.mp3")
                     Timer2.Enabled = False
@@ -4511,7 +4519,7 @@ Public Class Form1
 
 
     Public Sub DispositionCall()
-        s = " "
+        s = ""
         NumberOfVehicles = 1
         VehicleNum = 1
         For i As Integer = 0 To 3
