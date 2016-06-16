@@ -2042,7 +2042,10 @@ Public Class Form1
             Case s.Contains("duplex")
                 sResidenceType = "Duplex"
 
-            Case s.Contains("condominum")
+            Case s.Contains("condominium")
+                sResidenceType = "Condominium"
+
+            Case s.Contains("condo")
                 sResidenceType = "Condominium"
 
             Case s.Contains("town home")
