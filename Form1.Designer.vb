@@ -1180,10 +1180,10 @@ Partial Class Form1
         '
         Me.lblQuestion.AutoSize = True
         Me.lblQuestion.BackColor = System.Drawing.Color.Transparent
-        Me.lblQuestion.Font = New System.Drawing.Font("Franklin Gothic Heavy", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblQuestion.Font = New System.Drawing.Font("Microsoft Sans Serif", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblQuestion.Location = New System.Drawing.Point(6, 155)
         Me.lblQuestion.Name = "lblQuestion"
-        Me.lblQuestion.Size = New System.Drawing.Size(173, 61)
+        Me.lblQuestion.Size = New System.Drawing.Size(182, 55)
         Me.lblQuestion.TabIndex = 41
         Me.lblQuestion.Text = "HELLO"
         '
@@ -2200,7 +2200,7 @@ Partial Class Form1
         Me.txtVerifierNum.ReadOnly = True
         Me.txtVerifierNum.Size = New System.Drawing.Size(100, 20)
         Me.txtVerifierNum.TabIndex = 135
-        Me.txtVerifierNum.Text = "1198"
+        Me.txtVerifierNum.Text = "1026"
         '
         'Label32
         '
@@ -2251,10 +2251,10 @@ Partial Class Form1
         '
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
-        Me.Label3.Font = New System.Drawing.Font("Franklin Gothic Demi Cond", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.Location = New System.Drawing.Point(9, 833)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(45, 20)
+        Me.Label3.Size = New System.Drawing.Size(57, 18)
         Me.Label3.TabIndex = 53
         Me.Label3.Text = "HELLO"
         '

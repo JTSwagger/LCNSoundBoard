@@ -2003,10 +2003,15 @@ Public Class Form1
     Public Sub getEmail()
         Dim emailAddr As String = s
         Console.WriteLine("unparsed email addr: {0}", emailAddr)
-        emailAddr = emailAddr.Replace(" ", "").Replace("at", "@")
-        If emailAddr.Substring(-1) = "." Then
-            Console.WriteLine("parsed email addr: {0}", emailAddr)
-        End If
+
+        Dim atIndex As String = emailAddr.LastIndexOf(" at ")
+
+        emailAddr = emailAddr.Remove(atIndex, 4).Insert(atIndex, "@")
+
+        emailAddr = emailAddr.Replace(" ", "")
+
+        Console.WriteLine("parsed email addr: {0}", emailAddr)
+
         LeadForm.Document.GetElementById("frmEmailAddress").SetAttribute("value", emailAddr)
     End Sub
 
@@ -3045,7 +3050,7 @@ Public Class Form1
     Public Sub CheckHowLong()
         Select Case True
             Case s.Contains("don't know"), s.Contains("not even sure"), s.Contains("not sure")
-                If numRepeats < 2 Then
+                If numRepeats < 2 Then    ' can this be 1? It seems a little annoying to be asked twice, and it's 1 in checkExpiration()
                     RollTheClip("C:\SoundBoard\Cheryl\TIE INS\Great what's your best guess.mp3")
                     numRepeats += 1
                 Else
@@ -3198,10 +3203,6 @@ Public Class Form1
         Loop
         NewAddress += " " & StreetSpelling
         zip = speech.Substring(speech.Length - 5, 5)
-
-
-
-
 
     End Sub
     Public Sub StopThatClip()
