@@ -1063,57 +1063,38 @@ Public Class Form1
     End Sub 'GETS THE VEHICLE YEAR
     Dim BADINFOCOUNTER As Integer = 0
 
-    Public Sub getMake(vehiclenum As Integer) 'currentq for this is 8
-        If secondPass = False Then
-            ModelHolder = s
-        End If
-        Timer2.Enabled = False
-        speechSkip = True
-        Dim X As Integer
-        Console.WriteLine(s)
-        For X = 1 To MAKELIST.Length - 1
-            If s.Contains(LCase(MAKELIST(X))) Then
-                vMake(vehiclenum) = UCase(MAKELIST(X).Replace(" ", "%20"))
-                Console.WriteLine(vMake(vehiclenum))
-                Exit For
+    Public Function getMakesList() As List(Of String)
+        Dim makesList As List(Of String) = New List(Of String)
+        Dim reader As StreamReader = New StreamReader("lists\makes.txt")
+        Try
+            Do
+                makesList.Add(reader.ReadLine)
+            Loop Until reader.Peek = -1
+        Catch
+            Console.WriteLine("file is empty, we good")
+        Finally
+            reader.Close()
+        End Try
+
+        Return makesList
+    End Function
+
+    Public Function getMake() As String
+        ' roll "who MAKES that car?" clip
+        m.StartMicAndRecognition()
+        Dim make As String = s
+        m.EndMicAndRecognition()
+
+        For Each maker As String In getMakesList()
+            If maker.Contains(make) Then
+                Return maker
             End If
         Next
-        If s.Contains("chevy") Then
-            vMake(vehiclenum) = "CHEVROLET"
-            Console.WriteLine("It's a Chevy")
-        End If
-        If s.Contains("folks wagon") Then
-            vMake(vehiclenum) = "VOLKSWAGEN"
-            Console.WriteLine("It's a VOLKSWAGEN")
-        End If
-        If vMake(vehiclenum) <> "" Then
 
-            If vehiclenum = 1 Then
-                LeadForm.Document.GetElementById("vehicle-make").SetAttribute("value", vMake(vehiclenum))
-                LeadForm.Document.GetElementById("vehicle-make").RaiseEvent("onchange")
-                speechSkip = True
-                CurrentQ = 9
-                Timer2.Enabled = True
-            Else
-                LeadForm.Document.GetElementById("vehicle" & vehiclenum & "-make").SetAttribute("value", vMake(vehiclenum))
-                LeadForm.Document.GetElementById("vehicle" & vehiclenum & "-make").RaiseEvent("onchange")
-                speechSkip = True
-                CurrentQ = 9
-                Timer2.Enabled = True
-            End If
+        ' should I call for a repeat here? 
+        Return "none"
+    End Function
 
-        Else
-            Console.WriteLine("-----MAKE NOT FOUND-----")
-            secondPass = True
-            Timer2.Enabled = False
-            CurrentQ = 8
-            RollTheClip("C:\SoundBoard\Cheryl\VEHICLE INFO\WHO MAKES THAT VEHICLE.MP3")
-            speechSkip = False
-            isQuestion = True
-
-        End If
-
-    End Sub 'GETS THE MAKE OF THE VEHICLE
     Dim ModelHolder As String = ""
     Public Function getModel(ByRef VehicleNum As Integer) As Boolean
 
@@ -1269,9 +1250,7 @@ Public Class Form1
                 Return True
             Case Else
                 Return False
-
         End Select
-
     End Function                       'checks to see if the initial speech received can confirm an answering machine
     Public Function HandlePartObjection() As Boolean
         isQuestion = True
@@ -1282,7 +1261,6 @@ Public Class Form1
             Console.WriteLine(Part)
 
             Try
-
                 Select Case True
                     Case Part.Contains("is this a real person"), Part.Contains("is this a recording"), s.Contains("robot"), s.Contains("automated")
                         RollTheClip("C:\Soundboard\Cheryl\REACTIONS\Loud-laugh.mp3")
@@ -1299,8 +1277,6 @@ Public Class Form1
                         Timer2.Enabled = True
                         counter2 = 0
                         Return True
-
-
 
                     Case Part.Contains("not interested"), Part.Contains("don't need a quote"), Part.Contains("i'm fine"), Part.Contains("not really interested"), Part.Contains("not in arrested"), Part.Contains("that's okay thank you"), Part.Contains("no interest"), Part.Contains("stop calling"), Part.Contains("i'm good"), Part.Contains("all set"), Part.Contains("don't want it"), Part.Contains("not changing"), Part.Contains("i'm happy with"), Part.Contains("very happy"), Part.Contains("no thank you"), Part.Contains("not looking"), Part.Contains("don't wanna change"), Part.Contains("no thank you"), Part.Contains("don't need insurance"), Part.Contains("not shopping for car insurance") 'NI
                         speechSkip = True
@@ -1408,7 +1384,6 @@ Public Class Form1
                         NICount += 1
                         Return True
 
-
                     Case Part.Contains("take me off your list"), Part.Contains("name off your list"), Part.Contains("number off your list"), Part.Contains("take me off"), Part.Contains("take me off your call list"), Part.Contains("no call list"), Part.Contains("take this number off the list"), Part.Contains("do not call list"), Part.Contains("remove me from the list"), Part.Contains("taken off his collar"), Part.Contains("remove me from your calling list"), Part.Contains("call list"), Part.Contains("calling list")
                         newobjection = False
                         speechSkip = True
@@ -1417,8 +1392,6 @@ Public Class Form1
                         CurrentQ = 31
                         Timer2.Enabled = True
                     Case Else
-
-
 
                 End Select
 
@@ -1453,8 +1426,6 @@ Public Class Form1
                 CurrentQ = 31
                 Timer2.Enabled = True
                 counter2 = 0
-
-
 
             Case obj.Contains("not interested"), obj.Contains("no interest"), obj.Contains("stop calling me"), obj.Contains("i'm good"), obj.Contains("all set"), obj.Contains("don't want it") 'NI
                 Console.WriteLine("NOT INTERESTED")
@@ -1589,23 +1560,6 @@ Public Class Form1
         End Select
 
     End Function 'Handles Question
-    Public Function CheckWhoseTalking() As Boolean
-        Select Case True
-            Case s.Contains("this is"), s.Contains("speaking"), s.Contains("you've got him"), s.Contains("you've got her"), s.Contains("yes"), s.Contains("yeah"), s.Contains("what's up?"), s.Contains("how can i help you"), s.Contains("hey"), s.Contains("what do you want"), s.Contains("hello"), s.Contains("hi"), s.Contains("his spouse"), s.Contains("her spouse"), s.Contains("his wife"), s.Contains("her husband")
-                Return True
-
-            Case s.Contains("not home"), s.Contains("he isn't"), s.Contains("not available"), s.Contains("he's not"), s.Contains(" a message"), s.Contains("he's working"), s.Contains("not here"), s.Contains("not right now"), s = "no", s.Contains("this is not")
-                RollTheClip("C:/Soundboard/Cheryl/WRAPUP/have a great day.mp3")
-                CurrentQ = 31
-                Timer2.Enabled = True
-                Return False
-
-            Case Else
-
-                Return False
-        End Select
-    End Function
-
 
     Public Function CheckWhoseTalking2() As Boolean
         Select Case True
@@ -1665,8 +1619,6 @@ Public Class Form1
 
     Public Sub HandleLastName()
         LeadForm.Document.GetElementById("frmLastName").SetAttribute("value", s)
-
-
     End Sub
 
 
@@ -1681,9 +1633,6 @@ Public Class Form1
             Case Else
                 repeatPlease()
         End Select
-
-
-
     End Sub
     Public Sub HandleCredit()
         Select Case True
@@ -1696,9 +1645,15 @@ Public Class Form1
             Case Else
                 repeatPlease()
         End Select
-
-
     End Sub
+
+    Public Function newGetEmail() As String
+        m.StartMicAndRecognition()
+        Dim emailAddr As String = s
+        m.EndMicAndRecognition()
+        Return emailAddr
+    End Function
+
     Public Sub getEmail()
         Console.WriteLine(s)
         Dim emailAddr As String = s
@@ -1798,9 +1753,19 @@ Public Class Form1
         Return str
     End Function
 
+    Public fullMonths As List(Of String)
+    Public Function parseBirthday(speechResponse As String) As String
+        Dim numberBirthday As Integer
+        Dim tryParse As Boolean = Int32.TryParse(speechResponse, numberBirthday)
+        If tryParse = False Then
+            Console.WriteLine("birthday input is not all numbers, boldly continuing on...")
+        End If
+        ' here be dragons 
+
+    End Function
+
+
     Dim spousebdaymonth As String
-
-
     Public Function finalizeSpouseBDay(isspouse As Boolean)
 
         Select Case True
@@ -1960,7 +1925,7 @@ Public Class Form1
 
     Public Function getCompanyList() As List(Of String)
         Dim compList As List(Of String) = New List(Of String)
-        Dim reader As StreamReader = New StreamReader("\lists\companies.txt")
+        Dim reader As StreamReader = New StreamReader("lists\companies.txt")
         Try
             Do
                 compList.Add(reader.ReadLine)
@@ -2514,17 +2479,8 @@ Public Class Form1
                 s += LCase(e.PhraseResponse.Results(0).DisplayText)
                 Part = ""
                 Console.WriteLine(s)
-
-            Else
-
-
             End If
-
-
         End If
-
-
-
     End Sub 'Handles when speech is sent back
     Sub enableTimer()
         txtSpeech.Text = "Cherylbot heard: " & Part
@@ -3692,12 +3648,10 @@ Public Class Form1
         ' what even is this
     End Sub
 
-
-
-
     Private Sub Button18_Click_3(sender As Object, e As EventArgs)
         RollTheClip("C:/SoundBoard/Cheryl/Names/Vanessa Name.mp3")
     End Sub
+
     Dim isAskingQuestion As Boolean
     'ASKS THE NEXT QUESTION TO KEEP THE CALL MOVING
     Public Sub AskQuestion()
