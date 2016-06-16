@@ -1968,9 +1968,9 @@ Public Class Form1
         End Select
     End Sub
     Public Sub HandleLastName()
-        LeadForm.Document.GetElementById("frmLastName").SetAttribute("value", s)
-
-
+        Dim lastName As String = s
+        lastName = lastName.Replace(".", "")
+        LeadForm.Document.GetElementById("frmLastName").SetAttribute("value", lastName)
     End Sub
     Public Sub HandlePhoneType()
         Select Case True
@@ -1980,13 +1980,13 @@ Public Class Form1
                 LeadForm.Document.GetElementById("frmPhoneType1").SetAttribute("selectedIndex", "2")
             Case s.Contains("work")
                 LeadForm.Document.GetElementById("frmPhoneType1").SetAttribute("selectedIndex", "3")
+            Case s.Contains("landline")
+                LeadForm.Document.GetElementById("frmPhoneType1").SetAttribute("selectedIndex", "2")
             Case Else
                 repeatPlease()
         End Select
-
-
-
     End Sub
+
     Public Sub HandleCredit()
         Select Case True
             Case s.Contains("Excellent")
@@ -1998,9 +1998,8 @@ Public Class Form1
             Case Else
                 repeatPlease()
         End Select
-
-
     End Sub
+
     Public Sub getEmail()
         Console.WriteLine(s)
         Dim emailAddr As String = s
